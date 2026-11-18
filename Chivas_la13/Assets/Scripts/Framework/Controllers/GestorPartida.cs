@@ -15,9 +15,10 @@ public class GestorPartida : MonoBehaviour
     public static Action<bool> OnTiroRival;
     public static Action<bool> OnTandaTerminada;
 
-    public RondaConfig ronda;
+    public RondaConfig[] rondas;
     public int tirosRegulares = 5;
     public float tiempoParaReiniciar = 3f;
+    public float tiempoParaAvanzar = 3f;
 
     private int golesJugador = 0;
     private int golesRival = 0;
@@ -26,6 +27,14 @@ public class GestorPartida : MonoBehaviour
     private bool terminada = false;
     private TiroRivalRequirement tiroRival = new TiroRivalRequirement();
     private DecidirTandaRequirement decidirTanda = new DecidirTandaRequirement();
+
+    /// <summary>
+    /// Data of the round that is being played right now
+    /// </summary>
+    public RondaConfig Ronda
+    {
+        get { return rondas[Torneo.rondaActual]; }
+    }
 
     /// <summary>
     /// True when the shootout already has a winner and no more shots are accepted
@@ -109,7 +118,7 @@ public class GestorPartida : MonoBehaviour
         if (terminada) return;
 
         tirosRival++;
-        bool anoto = tiroRival.Anota(ronda.probabilidadRival);
+        bool anoto = tiroRival.Anota(Ronda.probabilidadRival);
         if (anoto) golesRival++;
 
         OnTiroRival?.Invoke(anoto);
@@ -128,22 +137,34 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
-    /// This method ends the shootout as a win
+    /// This method ends the shootout as a win and moves to the next round after a few seconds
     /// </summary>
     void Ganar()
     {
         terminada = true;
         OnTandaTerminada?.Invoke(true);
+        Invoke("SiguienteRonda", tiempoParaAvanzar);
     }
 
     /// <summary>
-    /// This method ends the shootout as a loss and restarts the scene after a few seconds
+    /// This method ends the shootout as a loss and restarts the same round after a few seconds
     /// </summary>
     void Perder()
     {
         terminada = true;
         OnTandaTerminada?.Invoke(false);
         Invoke("Reiniciar", tiempoParaReiniciar);
+    }
+
+    /// <summary>
+    /// This method moves the tournament to the next round, unless the final was already won
+    /// </summary>
+    void SiguienteRonda()
+    {
+        if (Torneo.rondaActual >= rondas.Length - 1) return;
+
+        Torneo.rondaActual++;
+        Reiniciar();
     }
 
     /// <summary>

@@ -15,6 +15,7 @@ public class MarcadorUI : MonoBehaviour
     public TextMeshProUGUI textoHistorialRival;
     public TextMeshProUGUI textoAnuncio;
     public TextMeshProUGUI textoAviso;
+    public TextMeshProUGUI textoReintento;
 
     private string historialChivas = "";
     private string historialRival = "";
@@ -48,7 +49,7 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     void Start()
     {
-        textoRonda.text = gestor.ronda.nombreRonda;
+        textoRonda.text = gestor.Ronda.nombreRonda;
         textoAnuncio.text = "";
         ActualizarTextos();
     }
@@ -79,7 +80,7 @@ public class MarcadorUI : MonoBehaviour
     private void MostrarRivalAlPunto(bool decisivo)
     {
         textoAnuncio.color = Color.white;
-        textoAnuncio.text = (decisivo ? "¡ESTE PENAL DECIDE TODO!\n" : "") + gestor.ronda.nombreRival + " AL PUNTO PENAL...";
+        textoAnuncio.text = (decisivo ? "¡ESTE PENAL DECIDE TODO!\n" : "") + gestor.Ronda.nombreRival + " AL PUNTO PENAL...";
     }
 
     /// <summary>
@@ -89,18 +90,23 @@ public class MarcadorUI : MonoBehaviour
     {
         historialRival += anoto ? "O " : "X ";
         textoAnuncio.color = anoto ? Color.red : Color.green;
-        textoAnuncio.text = gestor.ronda.nombreRival + (anoto ? " ¡ANOTA!" : " ¡FALLA!");
+        textoAnuncio.text = gestor.Ronda.nombreRival + (anoto ? " ¡ANOTA!" : " ¡FALLA!");
         ActualizarTextos();
     }
 
     /// <summary>
-    /// This method shows the final message when the shootout is over
+    /// This method shows the message of the current round when the shootout is over, and the retry message if it was lost
     /// </summary>
     private void MostrarAviso(bool gano)
     {
         textoAviso.color = gano ? Color.green : Color.red;
-        textoAviso.text = gano ? "¡GANASTE!" : "PERDISTE";
+        textoAviso.text = gano ? gestor.Ronda.mensajeVictoria : gestor.Ronda.mensajeDerrota;
         textoAviso.gameObject.SetActive(true);
+
+        if (gano) return;
+
+        textoReintento.text = gestor.Ronda.mensajeReintento;
+        textoReintento.gameObject.SetActive(true);
     }
 
     /// <summary>
@@ -120,9 +126,9 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     private void ActualizarTextos()
     {
-        textoMarcador.text = $"CHIVAS {gestor.GolesJugador} - {gestor.GolesRival} {gestor.ronda.nombreRival}";
+        textoMarcador.text = $"CHIVAS {gestor.GolesJugador} - {gestor.GolesRival} {gestor.Ronda.nombreRival}";
         textoHistorialChivas.text = "CHIVAS  " + historialChivas + Pendientes(gestor.TirosJugador);
-        textoHistorialRival.text = gestor.ronda.nombreRival + "  " + historialRival + Pendientes(gestor.TirosRival);
+        textoHistorialRival.text = gestor.Ronda.nombreRival + "  " + historialRival + Pendientes(gestor.TirosRival);
     }
 
     /// <summary>

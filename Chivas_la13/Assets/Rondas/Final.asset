@@ -15,3 +15,6 @@ MonoBehaviour:
   nombreRonda: FINAL
   nombreRival: "AM\xC9RICA"
   probabilidadRival: 0.75
+  mensajeVictoria: "\xA1CAMPEONES!"
+  mensajeDerrota: SUBCAMPEONES
+  mensajeReintento: REINTENTA LA FINAL

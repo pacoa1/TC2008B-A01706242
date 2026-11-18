@@ -15,3 +15,6 @@ MonoBehaviour:
   nombreRonda: CUARTOS DE FINAL
   nombreRival: GALLOS
   probabilidadRival: 0.25
+  mensajeVictoria: "\xA1A SEMIFINALES!"
+  mensajeDerrota: ELIMINADOS
+  mensajeReintento: REINTENTA LOS CUARTOS DE FINAL
