@@ -8,5 +8,6 @@ public static class Constants
     public const string GOL = "Gol";
     public const string ATAJADA = "Atajada";
     public const string POSTE = "Poste";
+    public const string TRAVESANO = "Travesaño";
     public const string FUERA = "Fuera";
 }

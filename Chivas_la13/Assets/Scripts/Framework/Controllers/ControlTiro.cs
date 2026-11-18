@@ -40,11 +40,10 @@ public class ControlTiro : MonoBehaviour
             float direccion = mira.transform.position.x;
             float potencia = barra.Potencia;
             int ladoPortero = Random.Range(-1, 2);
-
-            balon.Patear(direccion, potencia);
-            portero.Lanzarse(ladoPortero);
-
             string resultado = evaluarTiro.Evaluar(direccion, potencia, ladoPortero);
+
+            balon.Patear(direccion, potencia, resultado);
+            portero.Lanzarse(ladoPortero);
             Debug.Log("Resultado: " + resultado);
         }
     }
