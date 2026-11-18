@@ -15,6 +15,9 @@ MonoBehaviour:
   nombreRonda: FINAL
   nombreRival: "AM\xC9RICA"
   probabilidadRival: 0.75
+  porteroSeMueve: 1
+  velocidadMira: 9
+  tiempoLimite: 5
   mensajeVictoria: "\xA1CAMPEONES!"
   mensajeDerrota: SUBCAMPEONES
   mensajeReintento: REINTENTAR LA FINAL

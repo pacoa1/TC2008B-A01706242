@@ -15,6 +15,9 @@ MonoBehaviour:
   nombreRonda: CUARTOS DE FINAL
   nombreRival: GALLOS
   probabilidadRival: 0.25
+  porteroSeMueve: 0
+  velocidadMira: 6
+  tiempoLimite: 0
   mensajeVictoria: "\xA1A SEMIFINALES!"
   mensajeDerrota: ELIMINADOS
   mensajeReintento: REINTENTAR LOS CUARTOS DE FINAL

@@ -15,6 +15,9 @@ MonoBehaviour:
   nombreRonda: SEMIFINAL
   nombreRival: CRUZ AZUL
   probabilidadRival: 0.5
+  porteroSeMueve: 1
+  velocidadMira: 6
+  tiempoLimite: 12
   mensajeVictoria: "\xA1A LA FINAL!"
   mensajeDerrota: ELIMINADOS
   mensajeReintento: REINTENTAR LA SEMIFINAL

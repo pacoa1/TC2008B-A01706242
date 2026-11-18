@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// This class makes the goalkeeper dive to the left, stay in the center or dive to the right.
+/// This class makes the goalkeeper move from side to side before the shot, if the round asks for it, and dive to the left, the center or the right.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
@@ -10,9 +10,13 @@ public class Portero : MonoBehaviour
 {
     public float distanciaClavado = 1.5f;
     public float duracionClavado = 0.4f;
+    public bool seMueve = false;
+    public float velocidadMovimiento = 1.2f;
+    public float alcanceMovimiento = 1f;
 
     private Vector3 posicionInicial;
     private Quaternion rotacionInicial;
+    private bool lanzado = false;
 
     /// <summary>
     /// This method is called before the first frame update and saves the starting position and rotation of the goalkeeper
@@ -24,10 +28,22 @@ public class Portero : MonoBehaviour
     }
 
     /// <summary>
+    /// This method is called once per frame and moves the goalkeeper from side to side using PingPong until he dives
+    /// </summary>
+    void Update()
+    {
+        if (!seMueve || lanzado) return;
+
+        float x = posicionInicial.x + Mathf.PingPong(Time.time * velocidadMovimiento, alcanceMovimiento * 2f) - alcanceMovimiento;
+        transform.position = new Vector3(x, posicionInicial.y, posicionInicial.z);
+    }
+
+    /// <summary>
     /// This method puts the goalkeeper back standing in the middle of the goal for the next shot
     /// </summary>
     public void Reiniciar()
     {
+        lanzado = false;
         transform.position = posicionInicial;
         transform.rotation = rotacionInicial;
     }
@@ -41,10 +57,11 @@ public class Portero : MonoBehaviour
     }
 
     /// <summary>
-    /// This method starts the dive: -1 = left, 0 = center, 1 = right
+    /// This method stops the side movement and starts the dive: -1 = left, 0 = center, 1 = right
     /// </summary>
     public void Lanzarse(int lado)
     {
+        lanzado = true;
         StartCoroutine(Clavado(lado));
     }
 

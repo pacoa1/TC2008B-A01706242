@@ -26,6 +26,15 @@ public class ControlTiro : MonoBehaviour
     private EvaluarTiroRequirement evaluarTiro = new EvaluarTiroRequirement();
 
     /// <summary>
+    /// This method is called before the first frame update and applies the difficulty of the current round
+    /// </summary>
+    void Start()
+    {
+        mira.velocidad = gestor.Ronda.velocidadMira;
+        portero.seMueve = gestor.Ronda.porteroSeMueve;
+    }
+
+    /// <summary>
     /// This method is called once per frame and moves to the next phase each time the space key is pressed
     /// </summary>
     void Update()
