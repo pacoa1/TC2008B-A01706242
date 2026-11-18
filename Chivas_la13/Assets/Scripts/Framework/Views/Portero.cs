@@ -33,6 +33,14 @@ public class Portero : MonoBehaviour
     }
 
     /// <summary>
+    /// This method returns the X position where the goalkeeper will end if he dives to the given side
+    /// </summary>
+    public float PosicionFinal(int lado)
+    {
+        return transform.position.x + lado * distanciaClavado;
+    }
+
+    /// <summary>
     /// This method starts the dive: -1 = left, 0 = center, 1 = right
     /// </summary>
     public void Lanzarse(int lado)

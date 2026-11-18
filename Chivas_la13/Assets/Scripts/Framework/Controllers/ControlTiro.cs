@@ -46,7 +46,8 @@ public class ControlTiro : MonoBehaviour
             float direccion = mira.transform.position.x;
             float potencia = barra.Potencia;
             int ladoPortero = Random.Range(-1, 2);
-            resultadoActual = evaluarTiro.Evaluar(direccion, potencia, ladoPortero);
+            float posicionPortero = portero.PosicionFinal(ladoPortero);
+            resultadoActual = evaluarTiro.Evaluar(direccion, potencia, posicionPortero);
 
             balon.Patear(direccion, potencia, resultadoActual);
             portero.Lanzarse(ladoPortero);

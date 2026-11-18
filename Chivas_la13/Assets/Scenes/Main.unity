@@ -167,7 +167,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5d9ab64319c1845c6be6a560de14e2c9, type: 2}
   - {fileID: 11400000, guid: 4f42facb865464dcd8df89cf6da2fd98, type: 2}
   - {fileID: 11400000, guid: 1d3568dd2482a4b1eb169614a12e6d17, type: 2}
-  tirosRegulares: 1
+  tirosRegulares: 5
   tiempoAntesDeContinuar: 1.5
 --- !u!1 &58300602
 GameObject:

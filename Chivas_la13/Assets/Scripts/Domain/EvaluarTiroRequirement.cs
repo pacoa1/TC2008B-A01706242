@@ -5,36 +5,31 @@
 /// </summary>
 public class EvaluarTiroRequirement
 {
-    private const float LIMITE_CENTRO = 1f;
-    private const float LIMITE_ESQUINA = 2.4f;
     private const float LIMITE_POSTE = 3f;
     private const float LIMITE_FUERA = 3.2f;
+    private const float ALCANCE_PORTERO = 0.9f;
+    private const float ALCANCE_TIRO_DEBIL = 1.45f;
     private const float POTENCIA_DEBIL = 0.35f;
     private const float POTENCIA_TRAVESANO = 0.75f;
     private const float POTENCIA_VOLADA = 0.85f;
 
     /// <summary>
-    /// This method returns the result of the shot using its direction, its power and the side where the goalkeeper dove
+    /// This method returns the result of the shot using its direction, its power and where the goalkeeper ended his dive
     /// </summary>
-    public string Evaluar(float direccion, float potencia, int ladoPortero)
+    public string Evaluar(float direccion, float potencia, float posicionPortero)
     {
         if (potencia > POTENCIA_VOLADA) return Constants.FUERA;
 
         float distancia = direccion < 0 ? -direccion : direccion;
-        int ladoTiro = direccion < 0 ? -1 : 1;
 
         if (distancia > LIMITE_FUERA) return Constants.FUERA;
         if (distancia >= LIMITE_POSTE) return Constants.POSTE;
         if (potencia > POTENCIA_TRAVESANO) return Constants.TRAVESANO;
 
-        if (distancia < LIMITE_CENTRO)
-        {
-            return ladoPortero == 0 ? Constants.ATAJADA : Constants.GOL;
-        }
+        float diferencia = direccion - posicionPortero;
+        float distanciaAlPortero = diferencia < 0 ? -diferencia : diferencia;
+        float alcance = potencia < POTENCIA_DEBIL ? ALCANCE_TIRO_DEBIL : ALCANCE_PORTERO;
 
-        if (ladoPortero != ladoTiro) return Constants.GOL;
-        if (potencia < POTENCIA_DEBIL) return Constants.ATAJADA;
-
-        return distancia < LIMITE_ESQUINA ? Constants.ATAJADA : Constants.GOL;
+        return distanciaAlPortero < alcance ? Constants.ATAJADA : Constants.GOL;
     }
 }
