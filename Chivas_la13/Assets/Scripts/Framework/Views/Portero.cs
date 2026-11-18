@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 /// <summary>
-/// This class makes the goalkeeper move from side to side before the shot, if the round asks for it, and dive to the left, the center or the right.
+/// This class moves the goalkeeper from side to side before the shot, if the round asks for it, makes him dive to the left, the center or the right, and plays the matching animations.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
@@ -15,20 +15,22 @@ public class Portero : MonoBehaviour
     public float alcanceMovimiento = 1f;
 
     private Vector3 posicionInicial;
-    private Quaternion rotacionInicial;
+    private float xAnterior;
     private bool lanzado = false;
+    private Animator animator;
 
     /// <summary>
-    /// This method is called before the first frame update and saves the starting position and rotation of the goalkeeper
+    /// This method is called before the first frame update, saves the starting position and finds the animator of the character
     /// </summary>
     void Start()
     {
         posicionInicial = transform.position;
-        rotacionInicial = transform.rotation;
+        xAnterior = posicionInicial.x;
+        animator = GetComponentInChildren<Animator>();
     }
 
     /// <summary>
-    /// This method is called once per frame and moves the goalkeeper from side to side using PingPong until he dives
+    /// This method is called once per frame, moves the goalkeeper from side to side using PingPong and tells the animator his speed
     /// </summary>
     void Update()
     {
@@ -36,6 +38,9 @@ public class Portero : MonoBehaviour
 
         float x = posicionInicial.x + Mathf.PingPong(Time.time * velocidadMovimiento, alcanceMovimiento * 2f) - alcanceMovimiento;
         transform.position = new Vector3(x, posicionInicial.y, posicionInicial.z);
+
+        animator.SetFloat("Velocidad", (x - xAnterior) / Time.deltaTime);
+        xAnterior = x;
     }
 
     /// <summary>
@@ -43,9 +48,11 @@ public class Portero : MonoBehaviour
     /// </summary>
     public void Reiniciar()
     {
+        if (lanzado) animator.SetTrigger("Reiniciar");
+
         lanzado = false;
         transform.position = posicionInicial;
-        transform.rotation = rotacionInicial;
+        xAnterior = posicionInicial.x;
     }
 
     /// <summary>
@@ -57,27 +64,31 @@ public class Portero : MonoBehaviour
     }
 
     /// <summary>
-    /// This method stops the side movement and starts the dive: -1 = left, 0 = center, 1 = right
+    /// This method stops the side movement, plays the dive or the save animation and starts the dive: -1 = left, 0 = center, 1 = right
     /// </summary>
     public void Lanzarse(int lado)
     {
         lanzado = true;
+
+        if (lado < 0) animator.SetTrigger("ClavadoIzquierda");
+        else if (lado > 0) animator.SetTrigger("ClavadoDerecha");
+        else animator.SetTrigger("AtajadaCentro");
+
         StartCoroutine(Clavado(lado));
     }
 
     /// <summary>
-    /// This coroutine moves and tilts the goalkeeper a little each frame towards the chosen side
+    /// This coroutine moves the goalkeeper a little each frame towards the chosen side, while the animation makes the body dive
     /// </summary>
     private IEnumerator Clavado(int lado)
     {
         Vector3 inicio = transform.position;
-        Vector3 destino = inicio + new Vector3(lado * distanciaClavado, -0.4f * Mathf.Abs(lado), 0f);
+        Vector3 destino = inicio + new Vector3(lado * distanciaClavado, 0f, 0f);
         float tiempo = 0f;
 
         while (tiempo < duracionClavado)
         {
             transform.position = Vector3.Lerp(inicio, destino, tiempo / duracionClavado);
-            transform.Rotate(Vector3.forward, -lado * 70f * Time.deltaTime / duracionClavado);
             tiempo += Time.deltaTime;
             yield return null;
         }
