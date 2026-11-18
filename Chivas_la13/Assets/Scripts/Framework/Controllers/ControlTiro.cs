@@ -9,6 +9,7 @@ public class ControlTiro : MonoBehaviour
 {
     public Mira mira;
     public BarraPotencia barra;
+    public Balon balon;
 
     /// <summary>
     /// Current phase of the shot: 0 = choosing direction, 1 = choosing power, 2 = shot in progress
@@ -32,7 +33,7 @@ public class ControlTiro : MonoBehaviour
         {
             barra.activa = false;
             fase = 2;
-            Debug.Log("Dirección: " + mira.transform.position.x + " | Potencia: " + barra.Potencia);
+            balon.Patear(mira.transform.position.x, barra.Potencia);
         }
     }
 }
