@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// This class controls the order of the shot: first the direction is chosen and then the power.
+/// This class controls the order of the shot and the timing of each moment of the round.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
@@ -12,13 +12,17 @@ public class ControlTiro : MonoBehaviour
     public Balon balon;
     public Portero portero;
     public GestorPartida gestor;
-    public float tiempoEntreTiros = 2.5f;
+    public float tiempoResultado = 1.5f;
+    public float tiempoAntesRival = 2f;
+    public float tiempoSuspenso = 1.5f;
+    public float tiempoDespuesRival = 2f;
 
     /// <summary>
     /// Current phase of the shot: 0 = choosing direction, 1 = choosing power, 2 = shot in progress
     /// </summary>
     private int fase = 0;
 
+    private string resultadoActual;
     private EvaluarTiroRequirement evaluarTiro = new EvaluarTiroRequirement();
 
     /// <summary>
@@ -42,14 +46,44 @@ public class ControlTiro : MonoBehaviour
             float direccion = mira.transform.position.x;
             float potencia = barra.Potencia;
             int ladoPortero = Random.Range(-1, 2);
-            string resultado = evaluarTiro.Evaluar(direccion, potencia, ladoPortero);
+            resultadoActual = evaluarTiro.Evaluar(direccion, potencia, ladoPortero);
 
-            balon.Patear(direccion, potencia, resultado);
+            balon.Patear(direccion, potencia, resultadoActual);
             portero.Lanzarse(ladoPortero);
-            gestor.RegistrarTiro(resultado);
 
-            Invoke("PrepararSiguienteTiro", tiempoEntreTiros);
+            Invoke("RegistrarResultado", tiempoResultado);
         }
+    }
+
+    /// <summary>
+    /// This method sends the result of the player's shot once the ball has reached its destination
+    /// </summary>
+    void RegistrarResultado()
+    {
+        gestor.RegistrarTiroJugador(resultadoActual);
+        if (gestor.Terminada) return;
+
+        Invoke("AnunciarRival", tiempoAntesRival);
+    }
+
+    /// <summary>
+    /// This method announces that the rival is going to shoot, to build suspense
+    /// </summary>
+    void AnunciarRival()
+    {
+        gestor.AnunciarTiroRival();
+        Invoke("TirarRival", tiempoSuspenso);
+    }
+
+    /// <summary>
+    /// This method plays the rival's shot and, if the shootout continues, prepares the next shot
+    /// </summary>
+    void TirarRival()
+    {
+        gestor.TirarRival();
+        if (gestor.Terminada) return;
+
+        Invoke("PrepararSiguienteTiro", tiempoDespuesRival);
     }
 
     /// <summary>
@@ -57,12 +91,11 @@ public class ControlTiro : MonoBehaviour
     /// </summary>
     void PrepararSiguienteTiro()
     {
-        if (gestor.Terminada) return;
-
         balon.Reiniciar();
         portero.Reiniciar();
         barra.Reiniciar();
         mira.activa = true;
         fase = 0;
+        gestor.AnunciarTiroJugador();
     }
 }

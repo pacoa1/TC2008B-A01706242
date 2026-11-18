@@ -163,8 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a952aa4ffd24c889c2d707871bfac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GestorPartida
-  rondasTotales: 5
-  probabilidadRival: 1
+  nombreRonda: CUARTOS DE FINAL
+  nombreRival: GALLOS
+  tirosRegulares: 5
+  probabilidadRival: 0.25
   tiempoParaReiniciar: 3
 --- !u!1 &58300602
 GameObject:
@@ -178,6 +180,7 @@ GameObject:
   - component: {fileID: 58300606}
   - component: {fileID: 58300605}
   - component: {fileID: 58300604}
+  - component: {fileID: 58300607}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -274,6 +277,25 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &58300607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58300602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3953aa09703c44908ad049d17b0c46b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MarcadorUI
+  gestor: {fileID: 43922392}
+  textoRonda: {fileID: 468403451}
+  textoMarcador: {fileID: 1106883771}
+  textoHistorialChivas: {fileID: 1167287324}
+  textoHistorialRival: {fileID: 1489573703}
+  textoAnuncio: {fileID: 1674701941}
+  textoAviso: {fileID: 1553669817}
 --- !u!1 &59435198
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +457,10 @@ MonoBehaviour:
   balon: {fileID: 1002467244}
   portero: {fileID: 1741561808}
   gestor: {fileID: 43922392}
-  tiempoEntreTiros: 2.5
+  tiempoResultado: 1.5
+  tiempoAntesRival: 2
+  tiempoSuspenso: 1.5
+  tiempoDespuesRival: 2
 --- !u!1 &421332945
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,7 +2181,7 @@ GameObject:
   - component: {fileID: 1674701942}
   - component: {fileID: 1674701941}
   m_Layer: 5
-  m_Name: TextoTiro
+  m_Name: TextoAnuncio
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2176,10 +2201,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 58300603}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 120}
-  m_SizeDelta: {x: 900, y: 60}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 220}
+  m_SizeDelta: {x: 1600, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1674701941
 MonoBehaviour:
@@ -2228,8 +2253,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 80
+  m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
