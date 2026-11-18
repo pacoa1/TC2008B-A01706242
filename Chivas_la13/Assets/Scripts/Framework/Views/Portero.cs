@@ -11,6 +11,27 @@ public class Portero : MonoBehaviour
     public float distanciaClavado = 1.5f;
     public float duracionClavado = 0.4f;
 
+    private Vector3 posicionInicial;
+    private Quaternion rotacionInicial;
+
+    /// <summary>
+    /// This method is called before the first frame update and saves the starting position and rotation of the goalkeeper
+    /// </summary>
+    void Start()
+    {
+        posicionInicial = transform.position;
+        rotacionInicial = transform.rotation;
+    }
+
+    /// <summary>
+    /// This method puts the goalkeeper back standing in the middle of the goal for the next shot
+    /// </summary>
+    public void Reiniciar()
+    {
+        transform.position = posicionInicial;
+        transform.rotation = rotacionInicial;
+    }
+
     /// <summary>
     /// This method starts the dive: -1 = left, 0 = center, 1 = right
     /// </summary>

@@ -11,6 +11,7 @@ public class ControlTiro : MonoBehaviour
     public BarraPotencia barra;
     public Balon balon;
     public Portero portero;
+    public float tiempoEntreTiros = 2.5f;
 
     /// <summary>
     /// Current phase of the shot: 0 = choosing direction, 1 = choosing power, 2 = shot in progress
@@ -45,6 +46,20 @@ public class ControlTiro : MonoBehaviour
             balon.Patear(direccion, potencia, resultado);
             portero.Lanzarse(ladoPortero);
             Debug.Log("Resultado: " + resultado);
+
+            Invoke("PrepararSiguienteTiro", tiempoEntreTiros);
         }
+    }
+
+    /// <summary>
+    /// This method puts the ball, the goalkeeper, the bar and the marker back so the player can shoot again
+    /// </summary>
+    void PrepararSiguienteTiro()
+    {
+        balon.Reiniciar();
+        portero.Reiniciar();
+        barra.Reiniciar();
+        mira.activa = true;
+        fase = 0;
     }
 }

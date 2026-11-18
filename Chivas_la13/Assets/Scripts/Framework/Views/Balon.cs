@@ -15,6 +15,24 @@ public class Balon : MonoBehaviour
     public float distanciaFuera = 11f;
     public float duracionRebote = 0.6f;
 
+    private Vector3 posicionInicial;
+
+    /// <summary>
+    /// This method is called before the first frame update and saves the position of the penalty spot
+    /// </summary>
+    void Start()
+    {
+        posicionInicial = transform.position;
+    }
+
+    /// <summary>
+    /// This method puts the ball back on the penalty spot for the next shot
+    /// </summary>
+    public void Reiniciar()
+    {
+        transform.position = posicionInicial;
+    }
+
     /// <summary>
     /// This method builds the path of the ball for the given result and starts moving it
     /// </summary>
