@@ -153,12 +153,16 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
-    /// This method ends the shootout as a win or a loss and allows to continue after a few seconds
+    /// This method ends the shootout as a win or a loss, saves its results in the tournament and allows to continue after a few seconds
     /// </summary>
     void Terminar(bool resultadoFinal)
     {
         terminada = true;
         gano = resultadoFinal;
+
+        Torneo.tandasJugadas++;
+        Torneo.golesTotales += golesJugador;
+
         OnTandaTerminada?.Invoke(gano);
         Invoke("PermitirContinuar", tiempoAntesDeContinuar);
     }
@@ -173,11 +177,15 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
-    /// This method moves the tournament to the next round, unless the final was already won
+    /// This method moves the tournament to the next round, or to the champion screen if the final was won
     /// </summary>
     void SiguienteRonda()
     {
-        if (Torneo.rondaActual >= rondas.Length - 1) return;
+        if (Torneo.rondaActual >= rondas.Length - 1)
+        {
+            SceneManager.LoadScene(Constants.ESCENA_CAMPEON);
+            return;
+        }
 
         Torneo.rondaActual++;
         Reiniciar();
