@@ -48,7 +48,7 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     void Start()
     {
-        textoRonda.text = gestor.nombreRonda;
+        textoRonda.text = gestor.ronda.nombreRonda;
         textoAnuncio.text = "";
         ActualizarTextos();
     }
@@ -79,7 +79,7 @@ public class MarcadorUI : MonoBehaviour
     private void MostrarRivalAlPunto(bool decisivo)
     {
         textoAnuncio.color = Color.white;
-        textoAnuncio.text = (decisivo ? "¡ESTE PENAL DECIDE TODO!\n" : "") + gestor.nombreRival + " AL PUNTO PENAL...";
+        textoAnuncio.text = (decisivo ? "¡ESTE PENAL DECIDE TODO!\n" : "") + gestor.ronda.nombreRival + " AL PUNTO PENAL...";
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public class MarcadorUI : MonoBehaviour
     {
         historialRival += anoto ? "O " : "X ";
         textoAnuncio.color = anoto ? Color.red : Color.green;
-        textoAnuncio.text = gestor.nombreRival + (anoto ? " ¡ANOTA!" : " ¡FALLA!");
+        textoAnuncio.text = gestor.ronda.nombreRival + (anoto ? " ¡ANOTA!" : " ¡FALLA!");
         ActualizarTextos();
     }
 
@@ -120,9 +120,9 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     private void ActualizarTextos()
     {
-        textoMarcador.text = $"CHIVAS {gestor.GolesJugador} - {gestor.GolesRival} {gestor.nombreRival}";
+        textoMarcador.text = $"CHIVAS {gestor.GolesJugador} - {gestor.GolesRival} {gestor.ronda.nombreRival}";
         textoHistorialChivas.text = "CHIVAS  " + historialChivas + Pendientes(gestor.TirosJugador);
-        textoHistorialRival.text = gestor.nombreRival + "  " + historialRival + Pendientes(gestor.TirosRival);
+        textoHistorialRival.text = gestor.ronda.nombreRival + "  " + historialRival + Pendientes(gestor.TirosRival);
     }
 
     /// <summary>

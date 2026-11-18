@@ -15,10 +15,8 @@ public class GestorPartida : MonoBehaviour
     public static Action<bool> OnTiroRival;
     public static Action<bool> OnTandaTerminada;
 
-    public string nombreRonda = "CUARTOS DE FINAL";
-    public string nombreRival = "GALLOS";
+    public RondaConfig ronda;
     public int tirosRegulares = 5;
-    public float probabilidadRival = 0.25f;
     public float tiempoParaReiniciar = 3f;
 
     private int golesJugador = 0;
@@ -104,14 +102,14 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
-    /// This method plays the rival's shot and checks if the shootout is over
+    /// This method plays the rival's shot using the probability of the current round and checks if the shootout is over
     /// </summary>
     public void TirarRival()
     {
         if (terminada) return;
 
         tirosRival++;
-        bool anoto = tiroRival.Anota(probabilidadRival);
+        bool anoto = tiroRival.Anota(ronda.probabilidadRival);
         if (anoto) golesRival++;
 
         OnTiroRival?.Invoke(anoto);

@@ -163,10 +163,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5a952aa4ffd24c889c2d707871bfac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GestorPartida
-  nombreRonda: CUARTOS DE FINAL
-  nombreRival: GALLOS
+  ronda: {fileID: 11400000, guid: 1d3568dd2482a4b1eb169614a12e6d17, type: 2}
   tirosRegulares: 5
-  probabilidadRival: 0.25
   tiempoParaReiniciar: 3
 --- !u!1 &58300602
 GameObject:
