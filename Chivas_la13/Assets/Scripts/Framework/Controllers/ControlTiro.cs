@@ -17,6 +17,8 @@ public class ControlTiro : MonoBehaviour
     /// </summary>
     private int fase = 0;
 
+    private EvaluarTiroRequirement evaluarTiro = new EvaluarTiroRequirement();
+
     /// <summary>
     /// This method is called once per frame and moves to the next phase each time the space key is pressed
     /// </summary>
@@ -34,10 +36,16 @@ public class ControlTiro : MonoBehaviour
         {
             barra.activa = false;
             fase = 2;
-            balon.Patear(mira.transform.position.x, barra.Potencia);
 
+            float direccion = mira.transform.position.x;
+            float potencia = barra.Potencia;
             int ladoPortero = Random.Range(-1, 2);
+
+            balon.Patear(direccion, potencia);
             portero.Lanzarse(ladoPortero);
+
+            string resultado = evaluarTiro.Evaluar(direccion, potencia, ladoPortero);
+            Debug.Log("Resultado: " + resultado);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Collections;
 /// </summary>
 public class Portero : MonoBehaviour
 {
-    public float distanciaClavado = 2f;
+    public float distanciaClavado = 1.5f;
     public float duracionClavado = 0.4f;
 
     /// <summary>
