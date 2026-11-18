@@ -14,17 +14,19 @@ public class GestorPartida : MonoBehaviour
     public static Action<bool> OnRivalAlPunto;
     public static Action<bool> OnTiroRival;
     public static Action<bool> OnTandaTerminada;
+    public static Action<bool> OnPuedeContinuar;
 
     public RondaConfig[] rondas;
     public int tirosRegulares = 5;
-    public float tiempoParaReiniciar = 3f;
-    public float tiempoParaAvanzar = 3f;
+    public float tiempoAntesDeContinuar = 1.5f;
 
     private int golesJugador = 0;
     private int golesRival = 0;
     private int tirosJugador = 0;
     private int tirosRival = 0;
     private bool terminada = false;
+    private bool gano = false;
+    private bool puedeContinuar = false;
     private TiroRivalRequirement tiroRival = new TiroRivalRequirement();
     private DecidirTandaRequirement decidirTanda = new DecidirTandaRequirement();
 
@@ -74,6 +76,20 @@ public class GestorPartida : MonoBehaviour
     public int TirosRival
     {
         get { return tirosRival; }
+    }
+
+    /// <summary>
+    /// This method is called once per frame and, when the shootout is over, waits for the space key to continue or retry
+    /// </summary>
+    void Update()
+    {
+        if (!puedeContinuar) return;
+        if (!Input.GetKeyDown(KeyCode.Space)) return;
+
+        puedeContinuar = false;
+
+        if (gano) SiguienteRonda();
+        else Reiniciar();
     }
 
     /// <summary>
@@ -132,28 +148,28 @@ public class GestorPartida : MonoBehaviour
     {
         int ganador = decidirTanda.Evaluar(golesJugador, golesRival, tirosJugador, tirosRival, tirosRegulares);
 
-        if (ganador == 1) Ganar();
-        else if (ganador == -1) Perder();
+        if (ganador == 1) Terminar(true);
+        else if (ganador == -1) Terminar(false);
     }
 
     /// <summary>
-    /// This method ends the shootout as a win and moves to the next round after a few seconds
+    /// This method ends the shootout as a win or a loss and allows to continue after a few seconds
     /// </summary>
-    void Ganar()
+    void Terminar(bool resultadoFinal)
     {
         terminada = true;
-        OnTandaTerminada?.Invoke(true);
-        Invoke("SiguienteRonda", tiempoParaAvanzar);
+        gano = resultadoFinal;
+        OnTandaTerminada?.Invoke(gano);
+        Invoke("PermitirContinuar", tiempoAntesDeContinuar);
     }
 
     /// <summary>
-    /// This method ends the shootout as a loss and restarts the same round after a few seconds
+    /// This method lets the player press space to continue and tells the screen to show how
     /// </summary>
-    void Perder()
+    void PermitirContinuar()
     {
-        terminada = true;
-        OnTandaTerminada?.Invoke(false);
-        Invoke("Reiniciar", tiempoParaReiniciar);
+        puedeContinuar = true;
+        OnPuedeContinuar?.Invoke(gano);
     }
 
     /// <summary>

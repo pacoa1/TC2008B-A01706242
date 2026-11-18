@@ -17,4 +17,4 @@ MonoBehaviour:
   probabilidadRival: 0.5
   mensajeVictoria: "\xA1A LA FINAL!"
   mensajeDerrota: ELIMINADOS
-  mensajeReintento: REINTENTA LA SEMIFINAL
+  mensajeReintento: REINTENTAR LA SEMIFINAL

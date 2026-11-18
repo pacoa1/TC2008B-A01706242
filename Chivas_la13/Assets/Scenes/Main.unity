@@ -168,8 +168,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f42facb865464dcd8df89cf6da2fd98, type: 2}
   - {fileID: 11400000, guid: 1d3568dd2482a4b1eb169614a12e6d17, type: 2}
   tirosRegulares: 1
-  tiempoParaReiniciar: 3
-  tiempoParaAvanzar: 3
+  tiempoAntesDeContinuar: 1.5
 --- !u!1 &58300602
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,7 +298,7 @@ MonoBehaviour:
   textoHistorialRival: {fileID: 1489573703}
   textoAnuncio: {fileID: 1674701941}
   textoAviso: {fileID: 1553669817}
-  textoReintento: {fileID: 1704305016}
+  textoContinuar: {fileID: 1704305016}
 --- !u!1 &59435198
 GameObject:
   m_ObjectHideFlags: 0
@@ -2353,7 +2352,7 @@ GameObject:
   - component: {fileID: 1704305017}
   - component: {fileID: 1704305016}
   m_Layer: 5
-  m_Name: TextoReintento
+  m_Name: TextoContinuar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

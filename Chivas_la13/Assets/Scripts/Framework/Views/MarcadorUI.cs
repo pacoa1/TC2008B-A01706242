@@ -15,7 +15,7 @@ public class MarcadorUI : MonoBehaviour
     public TextMeshProUGUI textoHistorialRival;
     public TextMeshProUGUI textoAnuncio;
     public TextMeshProUGUI textoAviso;
-    public TextMeshProUGUI textoReintento;
+    public TextMeshProUGUI textoContinuar;
 
     private string historialChivas = "";
     private string historialRival = "";
@@ -30,6 +30,7 @@ public class MarcadorUI : MonoBehaviour
         GestorPartida.OnRivalAlPunto += MostrarRivalAlPunto;
         GestorPartida.OnTiroRival += MostrarTiroRival;
         GestorPartida.OnTandaTerminada += MostrarAviso;
+        GestorPartida.OnPuedeContinuar += MostrarContinuar;
     }
 
     /// <summary>
@@ -42,6 +43,7 @@ public class MarcadorUI : MonoBehaviour
         GestorPartida.OnRivalAlPunto -= MostrarRivalAlPunto;
         GestorPartida.OnTiroRival -= MostrarTiroRival;
         GestorPartida.OnTandaTerminada -= MostrarAviso;
+        GestorPartida.OnPuedeContinuar -= MostrarContinuar;
     }
 
     /// <summary>
@@ -95,18 +97,22 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method shows the message of the current round when the shootout is over, and the retry message if it was lost
+    /// This method shows the message of the current round when the shootout is over
     /// </summary>
     private void MostrarAviso(bool gano)
     {
         textoAviso.color = gano ? Color.green : Color.red;
         textoAviso.text = gano ? gestor.Ronda.mensajeVictoria : gestor.Ronda.mensajeDerrota;
         textoAviso.gameObject.SetActive(true);
+    }
 
-        if (gano) return;
-
-        textoReintento.text = gestor.Ronda.mensajeReintento;
-        textoReintento.gameObject.SetActive(true);
+    /// <summary>
+    /// This method tells the player to press space to continue to the next round or to retry the current one
+    /// </summary>
+    private void MostrarContinuar(bool gano)
+    {
+        textoContinuar.text = "PRESIONA ESPACIO PARA " + (gano ? "CONTINUAR" : gestor.Ronda.mensajeReintento);
+        textoContinuar.gameObject.SetActive(true);
     }
 
     /// <summary>
