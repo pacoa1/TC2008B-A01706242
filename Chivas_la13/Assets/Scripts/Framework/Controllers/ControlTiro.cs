@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// This class controls the order of the shot and the timing of each moment of the round.
+/// This class controls the order of the shot, the time limit of each shot and the timing of each moment of the round.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
@@ -22,8 +22,25 @@ public class ControlTiro : MonoBehaviour
     /// </summary>
     private int fase = 0;
 
+    private float tiempoRestante;
     private string resultadoActual;
     private EvaluarTiroRequirement evaluarTiro = new EvaluarTiroRequirement();
+
+    /// <summary>
+    /// Seconds left to take the current shot
+    /// </summary>
+    public float TiempoRestante
+    {
+        get { return tiempoRestante; }
+    }
+
+    /// <summary>
+    /// True when the round has a time limit and the player is still choosing the direction or the power
+    /// </summary>
+    public bool HayTiempoLimite
+    {
+        get { return gestor.Ronda.tiempoLimite > 0 && fase < 2; }
+    }
 
     /// <summary>
     /// This method is called before the first frame update and applies the difficulty of the current round
@@ -32,13 +49,25 @@ public class ControlTiro : MonoBehaviour
     {
         mira.velocidad = gestor.Ronda.velocidadMira;
         portero.seMueve = gestor.Ronda.porteroSeMueve;
+        tiempoRestante = gestor.Ronda.tiempoLimite;
     }
 
     /// <summary>
-    /// This method is called once per frame and moves to the next phase each time the space key is pressed
+    /// This method is called once per frame, counts down the time limit and moves to the next phase each time the space key is pressed
     /// </summary>
     void Update()
     {
+        if (HayTiempoLimite)
+        {
+            tiempoRestante -= Time.deltaTime;
+
+            if (tiempoRestante <= 0)
+            {
+                SeAcaboElTiempo();
+                return;
+            }
+        }
+
         if (!Input.GetKeyDown(KeyCode.Space)) return;
 
         if (fase == 0)
@@ -63,6 +92,18 @@ public class ControlTiro : MonoBehaviour
 
             Invoke("RegistrarResultado", tiempoResultado);
         }
+    }
+
+    /// <summary>
+    /// This method ends the shot as a miss when the player runs out of time
+    /// </summary>
+    void SeAcaboElTiempo()
+    {
+        mira.activa = false;
+        barra.activa = false;
+        fase = 2;
+        resultadoActual = Constants.TIEMPO;
+        RegistrarResultado();
     }
 
     /// <summary>
@@ -97,7 +138,7 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method puts the ball, the goalkeeper, the bar and the marker back so the player can shoot again
+    /// This method puts the ball, the goalkeeper, the bar, the marker and the time limit back so the player can shoot again
     /// </summary>
     void PrepararSiguienteTiro()
     {
@@ -106,6 +147,7 @@ public class ControlTiro : MonoBehaviour
         barra.Reiniciar();
         mira.activa = true;
         fase = 0;
+        tiempoRestante = gestor.Ronda.tiempoLimite;
         gestor.AnunciarTiroJugador();
     }
 }

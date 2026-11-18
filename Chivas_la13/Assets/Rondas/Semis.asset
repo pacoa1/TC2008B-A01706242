@@ -17,7 +17,7 @@ MonoBehaviour:
   probabilidadRival: 0.5
   porteroSeMueve: 1
   velocidadMira: 6
-  tiempoLimite: 12
+  tiempoLimite: 10
   mensajeVictoria: "\xA1A LA FINAL!"
   mensajeDerrota: ELIMINADOS
   mensajeReintento: REINTENTAR LA SEMIFINAL

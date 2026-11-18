@@ -2,13 +2,14 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// This class shows the score, the history of shots, the announcements of each moment and the final message on the screen.
+/// This class shows the score, the history of shots, the time limit, the announcements of each moment and the final message on the screen.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
 public class MarcadorUI : MonoBehaviour
 {
     public GestorPartida gestor;
+    public ControlTiro control;
     public TextMeshProUGUI textoRonda;
     public TextMeshProUGUI textoMarcador;
     public TextMeshProUGUI textoHistorialChivas;
@@ -16,6 +17,7 @@ public class MarcadorUI : MonoBehaviour
     public TextMeshProUGUI textoAnuncio;
     public TextMeshProUGUI textoAviso;
     public TextMeshProUGUI textoContinuar;
+    public TextMeshProUGUI textoTiempo;
 
     private string historialChivas = "";
     private string historialRival = "";
@@ -53,7 +55,23 @@ public class MarcadorUI : MonoBehaviour
     {
         textoRonda.text = gestor.Ronda.nombreRonda;
         textoAnuncio.text = "";
+        textoTiempo.text = "";
         ActualizarTextos();
+    }
+
+    /// <summary>
+    /// This method is called once per frame and shows the seconds left to shoot, in red during the last three seconds
+    /// </summary>
+    void Update()
+    {
+        if (!control.HayTiempoLimite)
+        {
+            textoTiempo.text = "";
+            return;
+        }
+
+        textoTiempo.color = control.TiempoRestante <= 3 ? Color.red : Color.white;
+        textoTiempo.text = $"{control.TiempoRestante:0}";
     }
 
     /// <summary>
@@ -124,6 +142,7 @@ public class MarcadorUI : MonoBehaviour
         if (resultado == Constants.ATAJADA) return "¡LA ATAJÓ!";
         if (resultado == Constants.POSTE) return "¡AL POSTE!";
         if (resultado == Constants.TRAVESANO) return "¡TRAVESAÑO!";
+        if (resultado == Constants.TIEMPO) return "¡SE ACABÓ EL TIEMPO!";
         return "¡AFUERA!";
     }
 

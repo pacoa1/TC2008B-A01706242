@@ -10,6 +10,7 @@ public static class Constants
     public const string POSTE = "Poste";
     public const string TRAVESANO = "Travesaño";
     public const string FUERA = "Fuera";
+    public const string TIEMPO = "Tiempo";
 
     public const string ESCENA_MENU = "Menu";
     public const string ESCENA_PARTIDO = "Main";
