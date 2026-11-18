@@ -11,6 +11,7 @@ public class ControlTiro : MonoBehaviour
     public BarraPotencia barra;
     public Balon balon;
     public Portero portero;
+    public GestorPartida gestor;
     public float tiempoEntreTiros = 2.5f;
 
     /// <summary>
@@ -45,7 +46,7 @@ public class ControlTiro : MonoBehaviour
 
             balon.Patear(direccion, potencia, resultado);
             portero.Lanzarse(ladoPortero);
-            Debug.Log("Resultado: " + resultado);
+            gestor.RegistrarTiro(resultado);
 
             Invoke("PrepararSiguienteTiro", tiempoEntreTiros);
         }
@@ -56,6 +57,8 @@ public class ControlTiro : MonoBehaviour
     /// </summary>
     void PrepararSiguienteTiro()
     {
+        if (gestor.Terminada) return;
+
         balon.Reiniciar();
         portero.Reiniciar();
         barra.Reiniciar();
