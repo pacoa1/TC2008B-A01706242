@@ -2,7 +2,7 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// This class shows the score, the history of shots, the time limit, the announcements of each moment and the final message on the screen.
+/// This class shows the score, the history of shots, the time limit, the instructions, the announcements of each moment and the final message on the screen.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
@@ -18,6 +18,7 @@ public class MarcadorUI : MonoBehaviour
     public TextMeshProUGUI textoAviso;
     public TextMeshProUGUI textoContinuar;
     public TextMeshProUGUI textoTiempo;
+    public TextMeshProUGUI textoInstruccion;
 
     private string historialChivas = "";
     private string historialRival = "";
@@ -60,10 +61,12 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method is called once per frame and shows the seconds left to shoot, in red during the last three seconds
+    /// This method is called once per frame, shows what the space key does now and the seconds left to shoot, in red during the last three seconds
     /// </summary>
     void Update()
     {
+        textoInstruccion.text = TextoInstruccion(control.Fase);
+
         if (!control.HayTiempoLimite)
         {
             textoTiempo.text = "";
@@ -131,6 +134,17 @@ public class MarcadorUI : MonoBehaviour
     {
         textoContinuar.text = "PRESIONA ESPACIO PARA " + (gano ? "CONTINUAR" : gestor.Ronda.mensajeReintento);
         textoContinuar.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// This method returns the instruction that matches the current phase of the shot, or nothing while the ball is moving
+    /// </summary>
+    private string TextoInstruccion(int fase)
+    {
+        if (fase == 0) return "ESPACIO: ELIGE LA DIRECCIÓN";
+        if (fase == 1) return "ESPACIO: ELIGE LA ALTURA";
+        if (fase == 2) return "ESPACIO: ELIGE LA FUERZA";
+        return "";
     }
 
     /// <summary>

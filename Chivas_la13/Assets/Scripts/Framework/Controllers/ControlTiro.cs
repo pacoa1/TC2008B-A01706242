@@ -20,7 +20,7 @@ public class ControlTiro : MonoBehaviour
     public float tiempoDespuesRival = 2f;
 
     /// <summary>
-    /// Current phase of the shot: 0 = choosing direction, 1 = choosing power, 2 = shot in progress
+    /// Current phase of the shot: 0 = choosing direction, 1 = choosing height, 2 = choosing power, 3 = shot in progress
     /// </summary>
     private int fase = 0;
 
@@ -31,6 +31,14 @@ public class ControlTiro : MonoBehaviour
     private EvaluarTiroRequirement evaluarTiro = new EvaluarTiroRequirement();
 
     /// <summary>
+    /// Current phase of the shot, so the screen can tell the player what the space key does
+    /// </summary>
+    public int Fase
+    {
+        get { return fase; }
+    }
+
+    /// <summary>
     /// Seconds left to take the current shot
     /// </summary>
     public float TiempoRestante
@@ -39,11 +47,11 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// True when the round has a time limit and the player is still choosing the direction or the power
+    /// True when the round has a time limit and the player is still choosing the direction, the height or the power
     /// </summary>
     public bool HayTiempoLimite
     {
-        get { return gestor.Ronda.tiempoLimite > 0 && fase < 2; }
+        get { return gestor.Ronda.tiempoLimite > 0 && fase < 3; }
     }
 
     /// <summary>
@@ -76,14 +84,19 @@ public class ControlTiro : MonoBehaviour
 
         if (fase == 0)
         {
-            mira.activa = false;
-            barra.activa = true;
+            mira.FijarDireccion();
             fase = 1;
         }
         else if (fase == 1)
         {
-            barra.activa = false;
+            mira.FijarAltura();
+            barra.activa = true;
             fase = 2;
+        }
+        else if (fase == 2)
+        {
+            barra.activa = false;
+            fase = 3;
 
             direccionActual = mira.transform.position.x;
             potenciaActual = barra.Potencia;
@@ -113,9 +126,9 @@ public class ControlTiro : MonoBehaviour
     /// </summary>
     void SeAcaboElTiempo()
     {
-        mira.activa = false;
+        mira.Detener();
         barra.activa = false;
-        fase = 2;
+        fase = 3;
         resultadoActual = Constants.TIEMPO;
         RegistrarResultado();
     }
@@ -153,7 +166,7 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method puts the ball, the goalkeeper, the bar, the marker, the time limit and the shooter back so the player can shoot again
+    /// This method puts the ball, the goalkeeper, the bar, the target, the time limit and the shooter back so the player can shoot again
     /// </summary>
     void PrepararSiguienteTiro()
     {
@@ -165,7 +178,7 @@ public class ControlTiro : MonoBehaviour
         balon.Reiniciar();
         portero.Reiniciar();
         barra.Reiniciar();
-        mira.activa = true;
+        mira.Reiniciar();
         fase = 0;
         tiempoRestante = gestor.Ronda.tiempoLimite;
         gestor.AnunciarTiroJugador();
