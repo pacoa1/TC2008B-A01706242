@@ -26,6 +26,7 @@ public class ControlTiro : MonoBehaviour
 
     private float tiempoRestante;
     private float direccionActual;
+    private float alturaActual;
     private float potenciaActual;
     private string resultadoActual;
     private EvaluarTiroRequirement evaluarTiro = new EvaluarTiroRequirement();
@@ -99,6 +100,7 @@ public class ControlTiro : MonoBehaviour
             fase = 3;
 
             direccionActual = mira.transform.position.x;
+            alturaActual = mira.transform.position.y;
             potenciaActual = barra.Potencia;
 
             tirador.SetTrigger("Patear");
@@ -107,15 +109,16 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method kicks the ball and makes the goalkeeper dive at the moment the foot of the shooter touches the ball
+    /// This method kicks the ball to the chosen point and makes the goalkeeper dive at the moment the foot of the shooter touches the ball
     /// </summary>
     void Disparar()
     {
         int ladoPortero = Random.Range(-1, 2);
         float posicionPortero = portero.PosicionFinal(ladoPortero);
-        resultadoActual = evaluarTiro.Evaluar(direccionActual, potenciaActual, posicionPortero);
+        float alturaFinal = evaluarTiro.AlturaFinal(alturaActual, potenciaActual);
+        resultadoActual = evaluarTiro.Evaluar(direccionActual, alturaFinal, potenciaActual, posicionPortero, ladoPortero);
 
-        balon.Patear(direccionActual, potenciaActual, resultadoActual);
+        balon.Patear(direccionActual, alturaFinal, potenciaActual, resultadoActual);
         portero.Lanzarse(ladoPortero);
 
         Invoke("RegistrarResultado", tiempoResultado);
