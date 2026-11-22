@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RondaConfig
   nombreRonda: SEMIFINAL
   nombreRival: CRUZ AZUL
+  abreviaturaRival: CAZ
+  colorRival: {r: 0, g: 0.278, b: 0.733, a: 1}
   probabilidadRival: 0.5
   porteroSeMueve: 1
   velocidadMira: 6

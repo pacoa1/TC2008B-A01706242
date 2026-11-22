@@ -10,6 +10,8 @@ public class RondaConfig : ScriptableObject
 {
     public string nombreRonda;
     public string nombreRival;
+    public string abreviaturaRival;
+    public Color colorRival;
     public float probabilidadRival;
     public bool porteroSeMueve;
     public float velocidadMira;

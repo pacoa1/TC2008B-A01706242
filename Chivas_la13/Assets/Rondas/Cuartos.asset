@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RondaConfig
   nombreRonda: CUARTOS DE FINAL
   nombreRival: GALLOS
+  abreviaturaRival: QRO
+  colorRival: {r: 0.106, g: 0.165, b: 0.341, a: 1}
   probabilidadRival: 0.25
   porteroSeMueve: 0
   velocidadMira: 6

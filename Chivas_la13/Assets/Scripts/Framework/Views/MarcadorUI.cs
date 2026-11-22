@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// This class shows the score, the history of shots, the time limit, the instructions, the announcements of each moment and the final message on the screen.
+/// This class shows the TV style scoreboard, the history of shots, the time limit, the instructions, the announcements of each moment and the final message on the screen.
 /// Standard coding documentation can be found in
 /// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments
 /// </summary>
@@ -11,14 +12,23 @@ public class MarcadorUI : MonoBehaviour
     public GestorPartida gestor;
     public ControlTiro control;
     public TextMeshProUGUI textoRonda;
-    public TextMeshProUGUI textoMarcador;
+    public TextMeshProUGUI textoGolesChivas;
+    public TextMeshProUGUI textoGolesRival;
+    public TextMeshProUGUI textoNombreRival;
+    public Image cajaRival;
     public TextMeshProUGUI textoHistorialChivas;
     public TextMeshProUGUI textoHistorialRival;
+    public GameObject fondoTiempo;
+    public TextMeshProUGUI textoTiempo;
+    public GameObject fondoInstruccion;
+    public TextMeshProUGUI textoInstruccion;
+    public GameObject fondoAnuncio;
     public TextMeshProUGUI textoAnuncio;
+    public Image fondoAviso;
     public TextMeshProUGUI textoAviso;
     public TextMeshProUGUI textoContinuar;
-    public TextMeshProUGUI textoTiempo;
-    public TextMeshProUGUI textoInstruccion;
+    public Color colorVictoria;
+    public Color colorDerrota;
 
     private string historialChivas = "";
     private string historialRival = "";
@@ -26,7 +36,7 @@ public class MarcadorUI : MonoBehaviour
     /// <summary>
     /// This method subscribes to the events of the game manager when the object is enabled
     /// </summary>
-    private void OnEnable()
+    void OnEnable()
     {
         GestorPartida.OnJugadorAlPunto += MostrarJugadorAlPunto;
         GestorPartida.OnTiroJugador += MostrarTiroJugador;
@@ -39,7 +49,7 @@ public class MarcadorUI : MonoBehaviour
     /// <summary>
     /// This method unsubscribes from the events of the game manager when the object is disabled
     /// </summary>
-    private void OnDisable()
+    void OnDisable()
     {
         GestorPartida.OnJugadorAlPunto -= MostrarJugadorAlPunto;
         GestorPartida.OnTiroJugador -= MostrarTiroJugador;
@@ -50,13 +60,19 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method is called before the first frame update and writes the initial texts
+    /// This method is called before the first frame update, paints the rival box, writes the round and shows the clock only when the round has a time limit
     /// </summary>
     void Start()
     {
-        textoRonda.text = gestor.Ronda.nombreRonda;
-        textoAnuncio.text = "";
+        float limite = gestor.Ronda.tiempoLimite;
+
+        textoRonda.text = gestor.Ronda.nombreRonda + (limite > 0 ? $"  ·  {limite:0} SEGUNDOS POR TIRO" : "");
+        textoNombreRival.text = gestor.Ronda.abreviaturaRival;
+
+        cajaRival.color = gestor.Ronda.colorRival;
+        fondoTiempo.SetActive(limite > 0);
         textoTiempo.text = "";
+        textoAnuncio.text = "";
         ActualizarTextos();
     }
 
@@ -65,16 +81,14 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     void Update()
     {
-        textoInstruccion.text = TextoInstruccion(control.Fase);
+        string instruccion = TextoInstruccion(control.Fase);
+        textoInstruccion.text = instruccion;
+        fondoInstruccion.SetActive(instruccion != "");
 
-        if (!control.HayTiempoLimite)
-        {
-            textoTiempo.text = "";
-            return;
-        }
+        if (!control.HayTiempoLimite) return;
 
-        textoTiempo.color = control.TiempoRestante <= 3 ? Color.red : Color.white;
-        textoTiempo.text = $"{control.TiempoRestante:0}";
+        textoTiempo.color = control.TiempoRestante <= 3 ? colorDerrota : Color.black;
+        textoTiempo.text = $"TIEMPO  00:{control.TiempoRestante:00}";
     }
 
     /// <summary>
@@ -82,8 +96,7 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     private void MostrarJugadorAlPunto(bool decisivo)
     {
-        textoAnuncio.color = Color.white;
-        textoAnuncio.text = decisivo ? "¡ESTE PENAL DECIDE TODO!" : "";
+        Anunciar(decisivo ? "¡ESTE PENAL DECIDE TODO!" : "", Color.white, false);
     }
 
     /// <summary>
@@ -92,8 +105,7 @@ public class MarcadorUI : MonoBehaviour
     private void MostrarTiroJugador(string resultado)
     {
         historialChivas += resultado == Constants.GOL ? "O " : "X ";
-        textoAnuncio.color = resultado == Constants.GOL ? Color.green : Color.red;
-        textoAnuncio.text = TextoResultado(resultado);
+        Anunciar(TextoResultado(resultado), resultado == Constants.GOL ? colorVictoria : colorDerrota, true);
         ActualizarTextos();
     }
 
@@ -102,8 +114,7 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     private void MostrarRivalAlPunto(bool decisivo)
     {
-        textoAnuncio.color = Color.white;
-        textoAnuncio.text = (decisivo ? "¡ESTE PENAL DECIDE TODO!\n" : "") + gestor.Ronda.nombreRival + " AL PUNTO PENAL...";
+        Anunciar((decisivo ? "¡ESTE PENAL DECIDE TODO!\n" : "") + gestor.Ronda.nombreRival + " AL PUNTO PENAL...", Color.white, true);
     }
 
     /// <summary>
@@ -112,19 +123,30 @@ public class MarcadorUI : MonoBehaviour
     private void MostrarTiroRival(bool anoto)
     {
         historialRival += anoto ? "O " : "X ";
-        textoAnuncio.color = anoto ? Color.red : Color.green;
-        textoAnuncio.text = gestor.Ronda.nombreRival + (anoto ? " ¡ANOTA!" : " ¡FALLA!");
+        Anunciar(gestor.Ronda.nombreRival + (anoto ? " ¡ANOTA!" : " ¡FALLA!"), anoto ? colorDerrota : colorVictoria, true);
         ActualizarTextos();
     }
 
     /// <summary>
-    /// This method shows the message of the current round when the shootout is over
+    /// This method shows the message of the current round on a green band if Chivas won or a red band if it lost
     /// </summary>
     private void MostrarAviso(bool gano)
     {
-        textoAviso.color = gano ? Color.green : Color.red;
+        textoAnuncio.text = "";
         textoAviso.text = gano ? gestor.Ronda.mensajeVictoria : gestor.Ronda.mensajeDerrota;
+        fondoAviso.color = gano ? colorVictoria : colorDerrota;
+        fondoAviso.gameObject.SetActive(true);
         textoAviso.gameObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// This method writes a message in the middle of the screen and darkens the pitch behind it when the player is only watching
+    /// </summary>
+    private void Anunciar(string texto, Color color, bool oscurecer)
+    {
+        textoAnuncio.color = color;
+        textoAnuncio.text = texto;
+        fondoAnuncio.SetActive(oscurecer);
     }
 
     /// <summary>
@@ -141,9 +163,9 @@ public class MarcadorUI : MonoBehaviour
     /// </summary>
     private string TextoInstruccion(int fase)
     {
-        if (fase == 0) return "ESPACIO: ELIGE LA DIRECCIÓN";
-        if (fase == 1) return "ESPACIO: ELIGE LA ALTURA";
-        if (fase == 2) return "ESPACIO: ELIGE LA FUERZA";
+        if (fase == 0) return "ESPACIO  ·  ELIGE LA DIRECCIÓN";
+        if (fase == 1) return "ESPACIO  ·  ELIGE LA ALTURA";
+        if (fase == 2) return "ESPACIO  ·  ELIGE LA FUERZA";
         return "";
     }
 
@@ -161,13 +183,14 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method writes the score and the history of both teams, filling the pending shots with dashes
+    /// This method writes the goals and the history of both teams, filling the pending shots with dashes
     /// </summary>
     private void ActualizarTextos()
     {
-        textoMarcador.text = $"CHIVAS {gestor.GolesJugador} - {gestor.GolesRival} {gestor.Ronda.nombreRival}";
-        textoHistorialChivas.text = "CHIVAS  " + historialChivas + Pendientes(gestor.TirosJugador);
-        textoHistorialRival.text = gestor.Ronda.nombreRival + "  " + historialRival + Pendientes(gestor.TirosRival);
+        textoGolesChivas.text = $"{gestor.GolesJugador}";
+        textoGolesRival.text = $"{gestor.GolesRival}";
+        textoHistorialChivas.text = historialChivas + Pendientes(gestor.TirosJugador);
+        textoHistorialRival.text = historialRival + Pendientes(gestor.TirosRival);
     }
 
     /// <summary>
