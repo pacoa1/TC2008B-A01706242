@@ -27,6 +27,7 @@ public class MarcadorUI : MonoBehaviour
     public Image fondoAviso;
     public TextMeshProUGUI textoAviso;
     public TextMeshProUGUI textoContinuar;
+    public GameObject confeti;
     public Color colorVictoria;
     public Color colorDerrota;
 
@@ -128,14 +129,15 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method shows the message of the current round on a green band if Chivas won or a red band if it lost
+    /// This method shows the message of the current round on a green band if Chivas won or a red band if it lost, and throws confetti when Chivas won
     /// </summary>
     private void MostrarAviso(bool gano)
     {
-        textoAnuncio.text = "";
+        Anunciar("", Color.white, false);
         textoAviso.text = gano ? gestor.Ronda.mensajeVictoria : gestor.Ronda.mensajeDerrota;
         fondoAviso.color = gano ? colorVictoria : colorDerrota;
         fondoAviso.gameObject.SetActive(true);
+        confeti.SetActive(gano);
         textoAviso.gameObject.SetActive(true);
     }
 
