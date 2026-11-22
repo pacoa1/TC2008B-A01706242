@@ -14,6 +14,8 @@ public class Balon : MonoBehaviour
     public float distanciaPoste = 7.65f;
     public float distanciaFuera = 11f;
     public float duracionRebote = 0.6f;
+    public float duracionTiroLento = 0.6f;
+    public float duracionTiroRapido = 0.35f;
 
     private Vector3 posicionInicial;
 
@@ -34,11 +36,11 @@ public class Balon : MonoBehaviour
     }
 
     /// <summary>
-    /// This method builds the path of the ball to the chosen point of the goal for the given result and starts moving it
+    /// This method builds the path of the ball to the chosen point of the goal for the given result and starts moving it; a stronger shot takes less time to arrive
     /// </summary>
     public void Patear(float direccion, float altura, float potencia, string resultado)
     {
-        float duracion = 1.2f - potencia * 0.7f;
+        float duracion = duracionTiroLento - potencia * (duracionTiroLento - duracionTiroRapido);
         int lado = direccion < 0 ? -1 : 1;
 
         Vector3[] puntos;

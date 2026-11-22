@@ -9,11 +9,12 @@ public class EvaluarTiroRequirement
     private const float LIMITE_FUERA = 4.35f;
     private const float LIMITE_TRAVESANO = 2.45f;
     private const float LIMITE_ARRIBA = 2.95f;
-    private const float ALCANCE_PORTERO = 0.9f;
-    private const float ALCANCE_TIRO_DEBIL = 1.45f;
-    private const float ALTURA_DE_PIE = 2.4f;
-    private const float ALTURA_CLAVADO = 1.8f;
-    private const float ALTURA_EXTRA_TIRO_DEBIL = 0.4f;
+    private const float ALCANCE_DE_PIE = 0.9f;
+    private const float ALCANCE_CLAVADO = 1.2f;
+    private const float ALCANCE_EXTRA_TIRO_DEBIL = 0.5f;
+    private const float ALTURA_DE_PIE = 2.2f;
+    private const float ALTURA_CLAVADO_IZQUIERDA = 1.6f;
+    private const float ALTURA_CLAVADO_DERECHA = 2.1f;
     private const float POTENCIA_DEBIL = 0.35f;
     private const float POTENCIA_FUERTE = 0.75f;
     private const float ELEVACION_POR_FUERZA = 5f;
@@ -28,7 +29,7 @@ public class EvaluarTiroRequirement
     }
 
     /// <summary>
-    /// This method returns the result of the shot using the point where the ball arrives, its power, where the goalkeeper ended his dive and the side he chose
+    /// This method returns the result of the shot using the point where the ball arrives, its power, where the goalkeeper ended his dive and the side he chose: a diving goalkeeper covers more width than a standing one, his dive to the left is lower than his dive to the right, and a weak shot gives him time to reach a little farther
     /// </summary>
     public string Evaluar(float direccion, float altura, float potencia, float posicionPortero, int ladoPortero)
     {
@@ -38,12 +39,13 @@ public class EvaluarTiroRequirement
         if (distancia >= LIMITE_POSTE) return Constants.POSTE;
         if (altura >= LIMITE_TRAVESANO) return Constants.TRAVESANO;
 
-        bool debil = potencia < POTENCIA_DEBIL;
+        bool dePie = ladoPortero == 0;
         float diferencia = direccion - posicionPortero;
         float distanciaAlPortero = diferencia < 0 ? -diferencia : diferencia;
-        float alcance = debil ? ALCANCE_TIRO_DEBIL : ALCANCE_PORTERO;
-        float alturaAlcance = ladoPortero == 0 ? ALTURA_DE_PIE : ALTURA_CLAVADO;
-        if (debil) alturaAlcance += ALTURA_EXTRA_TIRO_DEBIL;
+        float alcance = dePie ? ALCANCE_DE_PIE : ALCANCE_CLAVADO;
+        float alturaClavado = ladoPortero < 0 ? ALTURA_CLAVADO_IZQUIERDA : ALTURA_CLAVADO_DERECHA;
+        float alturaAlcance = dePie ? ALTURA_DE_PIE : alturaClavado;
+        if (potencia < POTENCIA_DEBIL) alcance += ALCANCE_EXTRA_TIRO_DEBIL;
 
         if (distanciaAlPortero < alcance && altura < alturaAlcance) return Constants.ATAJADA;
         return Constants.GOL;
