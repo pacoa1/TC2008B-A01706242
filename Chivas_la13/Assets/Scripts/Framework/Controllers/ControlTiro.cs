@@ -14,7 +14,7 @@ public class ControlTiro : MonoBehaviour
     public GestorPartida gestor;
     public Animator tirador;
     public SonidosPartida sonidos;
-    public float tiempoContacto = 0.6f;
+    public float tiempoContacto = 0.9f;
     public float tiempoResultado = 1.5f;
     public float tiempoAntesRival = 2f;
     public float tiempoSuspenso = 1.5f;
@@ -114,7 +114,7 @@ public class ControlTiro : MonoBehaviour
     /// <summary>
     /// This method kicks the ball to the chosen point and makes the goalkeeper dive at the moment the foot of the shooter touches the ball
     /// </summary>
-    void Disparar()
+    private void Disparar()
     {
         int ladoPortero = Random.Range(-1, 2);
         float posicionPortero = portero.PosicionFinal(ladoPortero);
@@ -130,7 +130,7 @@ public class ControlTiro : MonoBehaviour
     /// <summary>
     /// This method ends the shot as a miss when the player runs out of time
     /// </summary>
-    void SeAcaboElTiempo()
+    private void SeAcaboElTiempo()
     {
         mira.Detener();
         barra.activa = false;
@@ -140,55 +140,81 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method sends the result of the player's shot once the ball has reached its destination, makes the shooter celebrate a goal and waits for the narration to finish before the rival shoots
+    /// This method sends the result of the player's shot once the ball has reached its destination, makes the shooter celebrate a goal and waits for the narration to finish before the rival shoots or the final message appears
     /// </summary>
-    void RegistrarResultado()
+    private void RegistrarResultado()
     {
         gestor.RegistrarTiroJugador(resultadoActual);
         if (resultadoActual == Constants.GOL) tirador.SetTrigger("Festejar");
-        if (gestor.Terminada) return;
 
-        float espera = sonidos.DuracionUltimoClip > tiempoAntesRival ? sonidos.DuracionUltimoClip : tiempoAntesRival;
-        Invoke("AnunciarRival", espera);
+        if (gestor.Terminada) Invoke("AnunciarFinal", Espera(tiempoAntesRival));
+        else Invoke("AnunciarRival", Espera(tiempoAntesRival));
     }
 
     /// <summary>
-    /// This method announces that the rival is going to shoot, to build suspense
+    /// This method clears the pitch for the rival: puts the ball and the goalkeeper back in place, hides the target and empties the power bar, then announces that the rival is going to shoot, to build suspense
     /// </summary>
-    void AnunciarRival()
+    private void AnunciarRival()
     {
+        balon.Reiniciar();
+        portero.Reiniciar();
+        OcultarIndicadores();
+
         gestor.AnunciarTiroRival();
         Invoke("TirarRival", tiempoSuspenso);
     }
 
     /// <summary>
-    /// This method plays the rival's shot and, if the shootout continues, prepares the next shot once the reaction of the fans is over
+    /// This method plays the rival's shot and, once the reaction of the fans is over, prepares the next shot or shows the final message
     /// </summary>
-    void TirarRival()
+    private void TirarRival()
     {
         gestor.TirarRival();
-        if (gestor.Terminada) return;
 
-        float espera = sonidos.DuracionUltimoClip > tiempoDespuesRival ? sonidos.DuracionUltimoClip : tiempoDespuesRival;
-        Invoke("PrepararSiguienteTiro", espera);
+        if (gestor.Terminada) Invoke("AnunciarFinal", Espera(tiempoDespuesRival));
+        else Invoke("PrepararSiguienteTiro", Espera(tiempoDespuesRival));
     }
 
     /// <summary>
-    /// This method puts the ball, the goalkeeper, the bar, the target, the time limit and the shooter back so the player can shoot again
+    /// This method hides the target and the power bar and shows the final message of the shootout once the last shot has been seen
     /// </summary>
-    void PrepararSiguienteTiro()
+    private void AnunciarFinal()
+    {
+        OcultarIndicadores();
+        gestor.AnunciarFinal();
+    }
+
+    /// <summary>
+    /// This method puts the shooter back, shows the target again and restarts the time limit so the player can shoot again; the ball, the goalkeeper and the bar were already put back before the rival's shot
+    /// </summary>
+    private void PrepararSiguienteTiro()
     {
         if (resultadoActual == Constants.GOL) tirador.SetTrigger("Reiniciar");
 
         tirador.transform.localPosition = Vector3.zero;
         tirador.transform.localRotation = Quaternion.identity;
 
-        balon.Reiniciar();
-        portero.Reiniciar();
-        barra.Reiniciar();
+        mira.gameObject.SetActive(true);
         mira.Reiniciar();
         fase = 0;
         tiempoRestante = gestor.Ronda.tiempoLimite;
         gestor.AnunciarTiroJugador();
+    }
+
+    /// <summary>
+    /// This method hides the target and empties the power bar while the player is not shooting
+    /// </summary>
+    private void OcultarIndicadores()
+    {
+        mira.gameObject.SetActive(false);
+        barra.Reiniciar();
+    }
+
+    /// <summary>
+    /// This method returns how long to wait before the next moment: the length of the last clip, or the given time if the clip is shorter
+    /// </summary>
+    private float Espera(float minimo)
+    {
+        return sonidos.DuracionUltimoClip > minimo ? sonidos.DuracionUltimoClip : minimo;
     }
 }

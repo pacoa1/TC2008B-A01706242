@@ -8,7 +8,7 @@ using UnityEngine;
 public class BarraPotencia : MonoBehaviour
 {
     public float velocidad = 1.5f;
-    public float alturaMaxima = 1.5f;
+    public float alturaMaxima = 1f;
     public bool activa = false;
 
     /// <summary>
@@ -20,15 +20,6 @@ public class BarraPotencia : MonoBehaviour
     }
 
     /// <summary>
-    /// This method hides the bar again so it starts empty on the next shot
-    /// </summary>
-    public void Reiniciar()
-    {
-        activa = false;
-        transform.localScale = new Vector3(1f, 0f, 1f);
-    }
-
-    /// <summary>
     /// This method is called once per frame and changes the height of the bar using PingPong
     /// </summary>
     void Update()
@@ -37,5 +28,14 @@ public class BarraPotencia : MonoBehaviour
 
         float altura = Mathf.PingPong(Time.time * velocidad, alturaMaxima);
         transform.localScale = new Vector3(1f, altura, 1f);
+    }
+
+    /// <summary>
+    /// This method hides the bar again so it starts empty on the next shot
+    /// </summary>
+    public void Reiniciar()
+    {
+        activa = false;
+        transform.localScale = new Vector3(1f, 0f, 1f);
     }
 }

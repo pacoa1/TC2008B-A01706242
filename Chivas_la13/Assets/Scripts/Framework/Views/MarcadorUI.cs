@@ -12,6 +12,8 @@ public class MarcadorUI : MonoBehaviour
     public GestorPartida gestor;
     public ControlTiro control;
     public TextMeshProUGUI textoRonda;
+    public GameObject fondoDecisivo;
+    public TextMeshProUGUI textoDecisivo;
     public TextMeshProUGUI textoGolesChivas;
     public TextMeshProUGUI textoGolesRival;
     public TextMeshProUGUI textoNombreRival;
@@ -26,6 +28,7 @@ public class MarcadorUI : MonoBehaviour
     public TextMeshProUGUI textoAnuncio;
     public Image fondoAviso;
     public TextMeshProUGUI textoAviso;
+    public GameObject fondoContinuar;
     public TextMeshProUGUI textoContinuar;
     public GameObject confeti;
     public Color colorVictoria;
@@ -61,7 +64,7 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method is called before the first frame update, paints the rival box, writes the round and shows the clock only when the round has a time limit
+    /// This method is called before the first frame update, paints the rival box and writes the round, telling how many seconds there are to shoot when the round has a time limit
     /// </summary>
     void Start()
     {
@@ -71,14 +74,13 @@ public class MarcadorUI : MonoBehaviour
         textoNombreRival.text = gestor.Ronda.abreviaturaRival;
 
         cajaRival.color = gestor.Ronda.colorRival;
-        fondoTiempo.SetActive(limite > 0);
-        textoTiempo.text = "";
         textoAnuncio.text = "";
+        textoDecisivo.text = "";
         ActualizarTextos();
     }
 
     /// <summary>
-    /// This method is called once per frame, shows what the space key does now and the seconds left to shoot, in red during the last three seconds
+    /// This method is called once per frame, shows what the space key does now and, only while the player is choosing his shot in a round with a time limit, the seconds left to shoot, in red during the last three seconds
     /// </summary>
     void Update()
     {
@@ -86,26 +88,29 @@ public class MarcadorUI : MonoBehaviour
         textoInstruccion.text = instruccion;
         fondoInstruccion.SetActive(instruccion != "");
 
-        if (!control.HayTiempoLimite) return;
-
+        textoTiempo.text = control.HayTiempoLimite ? $"TIEMPO  00:{control.TiempoRestante:00}" : "";
         textoTiempo.color = control.TiempoRestante <= 3 ? colorDerrota : Color.black;
-        textoTiempo.text = $"TIEMPO  00:{control.TiempoRestante:00}";
+        fondoTiempo.SetActive(control.HayTiempoLimite);
     }
 
     /// <summary>
-    /// This method warns the player when the next shot can decide the shootout
+    /// This method clears the middle of the screen so the player can aim, and warns under the scoreboard when the next shot can decide the shootout
     /// </summary>
     private void MostrarJugadorAlPunto(bool decisivo)
     {
-        Anunciar(decisivo ? "¡ESTE PENAL DECIDE TODO!" : "", Color.white, false);
+        Anunciar("", Color.white, false);
+        textoDecisivo.text = decisivo ? "¡ESTE PENAL DECIDE TODO!" : "";
+        fondoDecisivo.SetActive(decisivo);
     }
 
     /// <summary>
-    /// This method shows the result of the player's shot, green if it was a goal and red if not
+    /// This method hides the warning of the decisive shot and shows the result of the player's shot, green if it was a goal and red if not
     /// </summary>
     private void MostrarTiroJugador(string resultado)
     {
         historialChivas += resultado == Constants.GOL ? "O " : "X ";
+        textoDecisivo.text = "";
+        fondoDecisivo.SetActive(false);
         Anunciar(TextoResultado(resultado), resultado == Constants.GOL ? colorVictoria : colorDerrota, true);
         ActualizarTextos();
     }
@@ -129,11 +134,11 @@ public class MarcadorUI : MonoBehaviour
     }
 
     /// <summary>
-    /// This method shows the message of the current round on a green band if Chivas won or a red band if it lost, and throws confetti when Chivas won
+    /// This method shows the message of the current round on a green band if Chivas won or a red band if it lost: a win lights up the pitch and throws confetti, a loss keeps the pitch dark
     /// </summary>
     private void MostrarAviso(bool gano)
     {
-        Anunciar("", Color.white, false);
+        Anunciar("", Color.white, !gano);
         textoAviso.text = gano ? gestor.Ronda.mensajeVictoria : gestor.Ronda.mensajeDerrota;
         fondoAviso.color = gano ? colorVictoria : colorDerrota;
         fondoAviso.gameObject.SetActive(true);
@@ -157,6 +162,7 @@ public class MarcadorUI : MonoBehaviour
     private void MostrarContinuar(bool gano)
     {
         textoContinuar.text = "PRESIONA ESPACIO PARA " + (gano ? "CONTINUAR" : gestor.Ronda.mensajeReintento);
+        fondoContinuar.SetActive(true);
         textoContinuar.gameObject.SetActive(true);
     }
 

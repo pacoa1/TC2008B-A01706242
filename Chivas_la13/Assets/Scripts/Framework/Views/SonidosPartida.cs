@@ -61,7 +61,7 @@ public class SonidosPartida : MonoBehaviour
     /// <summary>
     /// This method chooses the narration that matches the result of the player's shot
     /// </summary>
-    void SonarTiro(string resultado)
+    private void SonarTiro(string resultado)
     {
         if (resultado != Constants.GOL)
         {
@@ -76,7 +76,7 @@ public class SonidosPartida : MonoBehaviour
     /// <summary>
     /// This method makes the fans whistle when the rival scores and applaud when the rival misses
     /// </summary>
-    void SonarTiroRival(bool anoto)
+    private void SonarTiroRival(bool anoto)
     {
         Reproducir(anoto ? chiflidos : aplausos);
     }
@@ -84,7 +84,7 @@ public class SonidosPartida : MonoBehaviour
     /// <summary>
     /// This method makes the fans applaud if Chivas won or whistle if it lost, only when the shootout ended on the player's shot because the rival's shot already has its own reaction
     /// </summary>
-    void SonarFinal(bool gano)
+    private void SonarFinal(bool gano)
     {
         if (gestor.TirosRival >= gestor.TirosJugador) return;
 
@@ -94,7 +94,7 @@ public class SonidosPartida : MonoBehaviour
     /// <summary>
     /// This method plays a clip once, saves how long it lasts and pauses the background chant while it plays
     /// </summary>
-    void Reproducir(AudioClip clip)
+    private void Reproducir(AudioClip clip)
     {
         fuente.PlayOneShot(clip);
         duracionUltimoClip = clip.length;

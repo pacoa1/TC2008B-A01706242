@@ -58,7 +58,7 @@ public class Aficionado : MonoBehaviour
     /// <summary>
     /// This method starts the celebration when the player's shot is a goal
     /// </summary>
-    void Festejar(string resultado)
+    private void Festejar(string resultado)
     {
         if (resultado != Constants.GOL) return;
 

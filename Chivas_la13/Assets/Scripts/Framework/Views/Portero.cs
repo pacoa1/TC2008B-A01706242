@@ -8,7 +8,7 @@ using System.Collections;
 /// </summary>
 public class Portero : MonoBehaviour
 {
-    public float distanciaClavado = 1.5f;
+    public float distanciaClavado = 2.2f;
     public float duracionClavado = 0.4f;
     public bool seMueve = false;
     public float velocidadMovimiento = 1.2f;

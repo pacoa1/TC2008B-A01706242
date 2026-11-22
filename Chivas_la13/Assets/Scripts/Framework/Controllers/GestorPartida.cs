@@ -143,9 +143,18 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
+    /// This method shows the final message of the shootout once the last shot has been seen, and allows to continue after a few seconds
+    /// </summary>
+    public void AnunciarFinal()
+    {
+        OnTandaTerminada?.Invoke(gano);
+        Invoke("PermitirContinuar", tiempoAntesDeContinuar);
+    }
+
+    /// <summary>
     /// This method asks the rules if there is already a winner and ends the shootout if so
     /// </summary>
-    void RevisarFinal()
+    private void RevisarFinal()
     {
         int ganador = decidirTanda.Evaluar(golesJugador, golesRival, tirosJugador, tirosRival, tirosRegulares);
 
@@ -154,24 +163,21 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
-    /// This method ends the shootout as a win or a loss, saves its results in the tournament and allows to continue after a few seconds
+    /// This method ends the shootout as a win or a loss and saves its results in the tournament; the final message waits until the last shot has been seen
     /// </summary>
-    void Terminar(bool resultadoFinal)
+    private void Terminar(bool resultadoFinal)
     {
         terminada = true;
         gano = resultadoFinal;
 
         Torneo.tandasJugadas++;
         Torneo.golesTotales += golesJugador;
-
-        OnTandaTerminada?.Invoke(gano);
-        Invoke("PermitirContinuar", tiempoAntesDeContinuar);
     }
 
     /// <summary>
     /// This method lets the player press space to continue and tells the screen to show how
     /// </summary>
-    void PermitirContinuar()
+    private void PermitirContinuar()
     {
         puedeContinuar = true;
         OnPuedeContinuar?.Invoke(gano);
@@ -180,7 +186,7 @@ public class GestorPartida : MonoBehaviour
     /// <summary>
     /// This method moves the tournament to the next round, or to the champion screen if the final was won
     /// </summary>
-    void SiguienteRonda()
+    private void SiguienteRonda()
     {
         if (Torneo.rondaActual >= rondas.Length - 1)
         {
@@ -195,7 +201,7 @@ public class GestorPartida : MonoBehaviour
     /// <summary>
     /// This method loads the current scene again to start a new shootout
     /// </summary>
-    void Reiniciar()
+    private void Reiniciar()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
