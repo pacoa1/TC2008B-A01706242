@@ -13,6 +13,7 @@ public class ControlTiro : MonoBehaviour
     public Portero portero;
     public GestorPartida gestor;
     public Animator tirador;
+    public SonidosPartida sonidos;
     public float tiempoContacto = 0.6f;
     public float tiempoResultado = 1.5f;
     public float tiempoAntesRival = 2f;
@@ -139,7 +140,7 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method sends the result of the player's shot once the ball has reached its destination, and makes the shooter celebrate a goal
+    /// This method sends the result of the player's shot once the ball has reached its destination, makes the shooter celebrate a goal and waits for the narration to finish before the rival shoots
     /// </summary>
     void RegistrarResultado()
     {
@@ -147,7 +148,8 @@ public class ControlTiro : MonoBehaviour
         if (resultadoActual == Constants.GOL) tirador.SetTrigger("Festejar");
         if (gestor.Terminada) return;
 
-        Invoke("AnunciarRival", tiempoAntesRival);
+        float espera = sonidos.DuracionUltimoClip > tiempoAntesRival ? sonidos.DuracionUltimoClip : tiempoAntesRival;
+        Invoke("AnunciarRival", espera);
     }
 
     /// <summary>
@@ -160,14 +162,15 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method plays the rival's shot and, if the shootout continues, prepares the next shot
+    /// This method plays the rival's shot and, if the shootout continues, prepares the next shot once the reaction of the fans is over
     /// </summary>
     void TirarRival()
     {
         gestor.TirarRival();
         if (gestor.Terminada) return;
 
-        Invoke("PrepararSiguienteTiro", tiempoDespuesRival);
+        float espera = sonidos.DuracionUltimoClip > tiempoDespuesRival ? sonidos.DuracionUltimoClip : tiempoDespuesRival;
+        Invoke("PrepararSiguienteTiro", espera);
     }
 
     /// <summary>
