@@ -66,10 +66,12 @@ public class ControlTiro : MonoBehaviour
     }
 
     /// <summary>
-    /// This method is called once per frame, counts down the time limit and moves to the next phase each time the space key is pressed
+    /// This method is called once per frame, counts down the time limit and moves to the next phase each time the space key is pressed; while the game is paused it ignores the keyboard
     /// </summary>
     void Update()
     {
+        if (Time.timeScale == 0) return;
+
         if (HayTiempoLimite)
         {
             tiempoRestante -= Time.deltaTime;

@@ -79,10 +79,11 @@ public class GestorPartida : MonoBehaviour
     }
 
     /// <summary>
-    /// This method is called once per frame and, when the shootout is over, waits for the space key to continue or retry
+    /// This method is called once per frame and, when the shootout is over, waits for the space key to continue or retry; while the game is paused it ignores the keyboard
     /// </summary>
     void Update()
     {
+        if (Time.timeScale == 0) return;
         if (!puedeContinuar) return;
         if (!Input.GetKeyDown(KeyCode.Space)) return;
 
