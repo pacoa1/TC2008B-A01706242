@@ -674,6 +674,60 @@ MonoBehaviour:
   tiempoAntesRival: 2
   tiempoSuspenso: 1.5
   tiempoDespuesRival: 2
+--- !u!1 &260052464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 260052465}
+  - component: {fileID: 260052466}
+  m_Layer: 0
+  m_Name: GestorAficion
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &260052465
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260052464}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1413641751}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &260052466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 260052464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e652e4b133604cfe8df0d6eaa9e503d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GestorAficion
+  aficionadoRojo: {fileID: 1583005073716313702, guid: 81d1051fb94cc4bcd882a0421c7ca6c7, type: 3}
+  aficionadoBlanco: {fileID: 7177531726602089926, guid: 5c75d31dbe0d643ec911463399a9a3a7, type: 3}
+  filas: 4
+  aficionadosPorFila: 18
+  inicioX: -17
+  separacionX: 2
+  inicioZ: 16.75
+  alturaEscalon: 1.5
+  fondoEscalon: 1.5
+  variacion: 0.3
 --- !u!1 &367554015
 GameObject:
   m_ObjectHideFlags: 0
@@ -3303,6 +3357,7 @@ Transform:
   - {fileID: 213918734}
   - {fileID: 43922391}
   - {fileID: 447916022}
+  - {fileID: 260052465}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1432113630
