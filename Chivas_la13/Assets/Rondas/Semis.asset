@@ -17,9 +17,9 @@ MonoBehaviour:
   abreviaturaRival: CAZ
   colorRival: {r: 0, g: 0.278, b: 0.733, a: 1}
   probabilidadRival: 0.5
-  porteroSeMueve: 1
+  porteroSeMueve: 0
   velocidadMira: 6
-  tiempoLimite: 10
+  tiempoLimite: 7
   mensajeVictoria: "\xA1A LA FINAL!"
   mensajeDerrota: ELIMINADOS
   mensajeReintento: REINTENTAR LA SEMIFINAL
